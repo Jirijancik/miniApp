@@ -76,6 +76,16 @@ __tests__/                # Mirrors src/ structure
 
 ---
 
+## Backend Verification
+
+When implementing or modifying API-related code, always verify against the live backend:
+- **Swagger UI**: `https://frontend-test-be.stage.thinkeasy.cz/api`
+- **OpenAPI 3.0 schema**: `https://frontend-test-be.stage.thinkeasy.cz/api-json`
+
+Check endpoint shapes, request/response formats, and error responses to ensure the implementation matches the actual backend behavior.
+
+---
+
 ## Code Standards
 
 ### SOLID Principles

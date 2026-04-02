@@ -10,7 +10,17 @@
       "Bash(npm install:*)",
       "Bash(npm ls:*)",
       "Bash(npm run:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//usr/local/bin/**)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm current:*)",
+      "WebFetch(domain:frontend-test-be.stage.thinkeasy.cz)",
+      "Bash(curl -s -w \"\\\\n--- HTTP %{http_code} ---\" https://frontend-test-be.stage.thinkeasy.cz/posts)",
+      "Bash(curl -s -w \"\\\\n--- HTTP %{http_code} ---\" -X POST https://frontend-test-be.stage.thinkeasy.cz/auth/refresh-token -H \"Content-Type: application/json\" -d '{\"\"token\"\":\"\"invalid-token\"\"}')",
+      "Bash(curl -s -w \"\\\\n--- HTTP %{http_code} ---\" -X POST https://frontend-test-be.stage.thinkeasy.cz/posts -H \"Content-Type: application/json\" -d '{\"\"title\"\":\"\"test\"\",\"\"content\"\":\"\"test\"\"}')",
+      "Bash(curl -s -w \"\\\\n--- HTTP %{http_code} ---\" -X POST https://frontend-test-be.stage.thinkeasy.cz/auth/login -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"bad@bad.com\"\",\"\"password\"\":\"\"wrong\"\"}')"
     ]
   }
 }

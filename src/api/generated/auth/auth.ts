@@ -10,52 +10,52 @@ import type {
   LoginInput,
   RefreshResponceModel,
   RefreshTokenInput,
-  SignupInput,
-} from ".././model";
+  SignupInput
+} from '.././model';
 
-import { customInstance } from "../../custom-instance";
+import { customInstance } from '../../custom-instance';
 
-/**
+
+
+  /**
  * @summary Signup a new user
  */
-export const authControllerSignup = (signupInput: SignupInput) => {
-  return customInstance<Auth>({
-    url: `/auth/signup`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: signupInput,
-  });
-};
-/**
+export const authControllerSignup = (
+    signupInput: SignupInput,
+ ) => {
+      return customInstance<Auth>(
+      {url: `/auth/signup`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: signupInput
+    },
+      );
+    }
+  /**
  * @summary Login an existing user
  */
-export const authControllerLogin = (loginInput: LoginInput) => {
-  return customInstance<Auth>({
-    url: `/auth/login`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: loginInput,
-  });
-};
-/**
+export const authControllerLogin = (
+    loginInput: LoginInput,
+ ) => {
+      return customInstance<Auth>(
+      {url: `/auth/login`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: loginInput
+    },
+      );
+    }
+  /**
  * @summary Refresh access token using a refresh token
  */
 export const authControllerRefreshToken = (
-  refreshTokenInput: RefreshTokenInput,
-) => {
-  return customInstance<RefreshResponceModel>({
-    url: `/auth/refresh-token`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: refreshTokenInput,
-  });
-};
-export type AuthControllerSignupResult = NonNullable<
-  Awaited<ReturnType<typeof authControllerSignup>>
->;
-export type AuthControllerLoginResult = NonNullable<
-  Awaited<ReturnType<typeof authControllerLogin>>
->;
-export type AuthControllerRefreshTokenResult = NonNullable<
-  Awaited<ReturnType<typeof authControllerRefreshToken>>
->;
+    refreshTokenInput: RefreshTokenInput,
+ ) => {
+      return customInstance<RefreshResponceModel>(
+      {url: `/auth/refresh-token`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: refreshTokenInput
+    },
+      );
+    }
+  export type AuthControllerSignupResult = NonNullable<Awaited<ReturnType<typeof authControllerSignup>>>
+export type AuthControllerLoginResult = NonNullable<Awaited<ReturnType<typeof authControllerLogin>>>
+export type AuthControllerRefreshTokenResult = NonNullable<Awaited<ReturnType<typeof authControllerRefreshToken>>>
