@@ -8,8 +8,8 @@ export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Separate instance for token refresh
-const refreshAxiosInstance = axios.create({
+// Separate instance for token refresh — no interceptors = no infinite loop
+export const refreshAxiosInstance = axios.create({
   baseURL: API_BASE_URL,
 });
 

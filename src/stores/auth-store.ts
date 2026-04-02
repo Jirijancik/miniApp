@@ -2,20 +2,14 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
 
 import {
   authControllerLogin,
   authControllerSignup,
 } from "@/api/generated/auth/auth";
 import type { SignupInput } from "@/api/generated/model";
-import { API_BASE_URL } from "@/constants/config";
+import { refreshAxiosInstance } from "@/api/axios-instance";
 import { showErrorToast } from "@/utils/toast";
-
-// Separate axios instance for refresh — no interceptors = no infinite loop
-const refreshAxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
-});
 
 interface JwtPayload {
   sub: string;
