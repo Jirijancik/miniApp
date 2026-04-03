@@ -9,9 +9,10 @@ Backend API: `https://frontend-test-be.stage.thinkeasy.cz`
 
 - **Framework**: Expo SDK 55 + Expo Router (file-based routing)
 - **Language**: TypeScript (strict)
-- **State**: Zustand (with persist middleware for auth)
+- **Client State**: Zustand (with persist middleware for auth)
+- **Server State**: TanStack Query (React Query) via Orval-generated hooks
 - **Forms**: react-hook-form + zod + @hookform/resolvers
-- **API Client**: Orval-generated axios functions
+- **API Client**: Orval-generated React Query hooks + axios functions
 - **HTTP**: Axios (interceptors for token refresh)
 - **Styling**: NativeWind (Tailwind CSS for RN)
 - **Toasts**: react-native-toast-message
@@ -45,12 +46,11 @@ src/
     axios-instance.ts     # Axios + interceptors + token refresh
     custom-instance.ts    # Orval mutator wrapper
   stores/
-    auth-store.ts         # Tokens, login/signup/logout/refresh
-    posts-store.ts        # Posts, search, loading, errors
+    auth-store.ts         # Tokens, login/signup/logout/refresh (Zustand + persist)
   components/
     ui/                   # Primitive components: Button, Input, Spinner, SkeletonCard
     PostCard.tsx, PostList.tsx, SearchBar.tsx, ErrorBoundary.tsx
-  hooks/                  # useAuth.ts, usePosts.ts, useSearch.ts
+  hooks/                  # useAuth.ts, usePosts.ts (React Query wrappers), useSearch.ts
   utils/                  # toast.ts, validation.ts
   constants/              # config.ts (API_BASE_URL)
 __tests__/                # Mirrors src/ structure
@@ -107,9 +107,11 @@ Check endpoint shapes, request/response formats, and error responses to ensure t
 - Use Zustand selectors to subscribe to specific slices, not the entire store.
 
 **Dependency Inversion**
-- Screens depend on hooks/stores (abstractions), not on axios or Orval-generated functions directly.
+- Screens depend on hooks (abstractions), not on axios or Orval-generated functions directly.
 - The axios custom instance is the only place that knows about HTTP details.
-- Stores call Orval-generated functions. Screens call store actions. Never skip a layer.
+- For server state (posts): screens use hooks from `usePosts.ts` which wrap Orval-generated React Query hooks.
+- For client state (auth): screens use hooks from `useAuth.ts` which wrap the Zustand auth store.
+- Never import Orval-generated functions directly in screens — go through the hooks layer.
 
 ### KISS — Keep It Simple
 
@@ -118,7 +120,7 @@ Check endpoint shapes, request/response formats, and error responses to ensure t
 - No custom hooks that only call one Zustand selector — inline that selector.
 - Prefer `FlatList` over building custom virtualization. Use RN primitives.
 - Client-side search is simple `filter` + `includes` — no search libraries.
-- No Redux, no React Query, no context providers for things Zustand handles.
+- No Redux, no extra context providers for things Zustand or React Query already handle.
 
 ### DRY — Don't Repeat Yourself
 
@@ -127,7 +129,7 @@ Check endpoint shapes, request/response formats, and error responses to ensure t
 - Toast helpers in `src/utils/toast.ts` — `showSuccessToast()` and `showErrorToast()` instead of repeating `Toast.show()` config.
 - One `PostList` component used on both Feed and Profile screens (accepts `posts` as prop).
 - One `Input` component with react-hook-form `Controller` integration — don't rewrite form bindings per screen.
-- Error handling pattern: try/catch in store actions → set error state → show toast. Same pattern everywhere, but don't abstract the try/catch itself into a generic wrapper unless there are 5+ identical patterns.
+- Error handling: React Query global `onError` in `QueryClient` config shows toasts automatically for mutations. For auth store, try/catch + `showErrorToast()` as before.
 
 ---
 
@@ -155,17 +157,28 @@ Check endpoint shapes, request/response formats, and error responses to ensure t
 - Use NativeWind `className` for styling — no `StyleSheet.create` unless NativeWind can't handle it.
 - Keep components under ~100 lines. If longer, extract sub-components or hooks.
 
-### State Management (Zustand)
+### State Management
+
+**Zustand (client state — auth only)**
 - Use selectors to prevent unnecessary re-renders: `useAuthStore(state => state.accessToken)` not `useAuthStore()`.
 - Use `getState()` for imperative access outside React (interceptors, store actions).
-- Persist middleware only on auth store. Posts are transient — refetch on mount.
-- Async actions live inside the store. Screens call `store.action()`, never raw API functions.
+- Persist middleware on auth store for token persistence to AsyncStorage.
+- Auth async actions (login, signup, logout, refresh) live inside the Zustand store.
+
+**React Query (server state — posts)**
+- Orval generates typed React Query hooks (`useQuery`/`useMutation`) from the OpenAPI spec.
+- `src/hooks/usePosts.ts` wraps generated hooks with friendlier names and adds client-side filtering.
+- Screens use these convenience hooks, never the Orval-generated hooks directly.
+- Cache invalidation via exported query key generators (e.g., `getPostsControllerGetAllPostsQueryKey()`).
+- `QueryClientProvider` lives in root `app/_layout.tsx` with global error toasts for mutations.
+- No manual `isLoading`/`error` state — React Query provides these automatically.
 
 ### Error Handling
 - Form validation: zod schemas (layer 1)
 - HTTP 401: axios interceptor handles silently (layer 2)
-- Store actions: try/catch → `error` state + `showErrorToast()` (layer 3)
-- Screen-level: display `error` from store if present (layer 4)
+- Auth store actions: try/catch → `showErrorToast()` (layer 3a)
+- React Query mutations: global `onError` in `QueryClient` → `showErrorToast()` (layer 3b)
+- React Query queries: `error` state from hook, display in screen (layer 4)
 - Unexpected crashes: `ErrorBoundary` wrapper (layer 5)
 - Never swallow errors silently. Always toast or display.
 
@@ -182,8 +195,9 @@ Check endpoint shapes, request/response formats, and error responses to ensure t
 
 - Hand-edit files in `src/api/generated/` — they are Orval output. Regenerate with `npm run generate-api`.
 - Add delete/update UI for posts — the API doesn't support it.
-- Use React Context for state that Zustand manages.
-- Import `axiosInstance` directly in screens — go through stores.
+- Use React Context for state that Zustand or React Query manages.
+- Import `axiosInstance` or Orval-generated hooks directly in screens — go through `src/hooks/`.
 - Use the intercepted axios instance for the refresh call (infinite loop).
 - Add pagination — the API doesn't support it.
-- Install additional state management or data-fetching libraries.
+- Create Zustand stores for server state — use React Query instead.
+- Install additional state management or data-fetching libraries beyond Zustand + React Query.

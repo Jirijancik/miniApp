@@ -5,6 +5,25 @@
  * Test Task BE
  * OpenAPI spec version: 1.0
  */
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
+import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
+} from '@tanstack/react-query';
+
 import type {
   CreatePostInput,
   PostResponce,
@@ -15,53 +34,329 @@ import { customInstance } from '../../custom-instance';
 
 
 
-  /**
+
+/**
  * @summary Create a new post
  */
 export const postsControllerCreate = (
     createPostInput: CreatePostInput,
- ) => {
+ signal?: AbortSignal
+) => {
+      
+      
       return customInstance<PostResponce>(
       {url: `/posts`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: createPostInput
+      data: createPostInput, signal
     },
       );
     }
-  /**
+  
+
+
+export const getPostsControllerCreateMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postsControllerCreate>>, TError,{data: CreatePostInput}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postsControllerCreate>>, TError,{data: CreatePostInput}, TContext> => {
+    
+const mutationKey = ['postsControllerCreate'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postsControllerCreate>>, {data: CreatePostInput}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postsControllerCreate(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostsControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof postsControllerCreate>>>
+    export type PostsControllerCreateMutationBody = CreatePostInput
+    export type PostsControllerCreateMutationError = unknown
+
+    /**
+ * @summary Create a new post
+ */
+export const usePostsControllerCreate = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postsControllerCreate>>, TError,{data: CreatePostInput}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postsControllerCreate>>,
+        TError,
+        {data: CreatePostInput},
+        TContext
+      > => {
+
+      const mutationOptions = getPostsControllerCreateMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * @summary Get all posts
  */
 export const postsControllerGetAllPosts = (
     
- ) => {
+ signal?: AbortSignal
+) => {
+      
+      
       return customInstance<PostResponse[]>(
-      {url: `/posts`, method: 'GET'
+      {url: `/posts`, method: 'GET', signal
     },
       );
     }
-  /**
+  
+
+export const getPostsControllerGetAllPostsQueryKey = () => {
+    return [`/posts`] as const;
+    }
+
+    
+export const getPostsControllerGetAllPostsQueryOptions = <TData = Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getPostsControllerGetAllPostsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerGetAllPosts>>> = ({ signal }) => postsControllerGetAllPosts(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PostsControllerGetAllPostsQueryResult = NonNullable<Awaited<ReturnType<typeof postsControllerGetAllPosts>>>
+export type PostsControllerGetAllPostsQueryError = unknown
+
+
+export function usePostsControllerGetAllPosts<TData = Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerGetAllPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerGetAllPosts>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePostsControllerGetAllPosts<TData = Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerGetAllPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerGetAllPosts>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePostsControllerGetAllPosts<TData = Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get all posts
+ */
+
+export function usePostsControllerGetAllPosts<TData = Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerGetAllPosts>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getPostsControllerGetAllPostsQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
  * @summary Get all posts of a user
  */
 export const postsControllerUserPosts = (
     userId: string,
- ) => {
+ signal?: AbortSignal
+) => {
+      
+      
       return customInstance<PostResponse[]>(
-      {url: `/posts/user/${userId}`, method: 'GET'
+      {url: `/posts/user/${userId}`, method: 'GET', signal
     },
       );
     }
-  /**
+  
+
+export const getPostsControllerUserPostsQueryKey = (userId: string,) => {
+    return [`/posts/user/${userId}`] as const;
+    }
+
+    
+export const getPostsControllerUserPostsQueryOptions = <TData = Awaited<ReturnType<typeof postsControllerUserPosts>>, TError = unknown>(userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getPostsControllerUserPostsQueryKey(userId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerUserPosts>>> = ({ signal }) => postsControllerUserPosts(userId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PostsControllerUserPostsQueryResult = NonNullable<Awaited<ReturnType<typeof postsControllerUserPosts>>>
+export type PostsControllerUserPostsQueryError = unknown
+
+
+export function usePostsControllerUserPosts<TData = Awaited<ReturnType<typeof postsControllerUserPosts>>, TError = unknown>(
+ userId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerUserPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerUserPosts>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePostsControllerUserPosts<TData = Awaited<ReturnType<typeof postsControllerUserPosts>>, TError = unknown>(
+ userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerUserPosts>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerUserPosts>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePostsControllerUserPosts<TData = Awaited<ReturnType<typeof postsControllerUserPosts>>, TError = unknown>(
+ userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get all posts of a user
+ */
+
+export function usePostsControllerUserPosts<TData = Awaited<ReturnType<typeof postsControllerUserPosts>>, TError = unknown>(
+ userId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerUserPosts>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getPostsControllerUserPostsQueryOptions(userId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
  * @summary Get a post by its ID
  */
 export const postsControllerPost = (
     postId: string,
- ) => {
+ signal?: AbortSignal
+) => {
+      
+      
       return customInstance<PostResponse>(
-      {url: `/posts/${postId}`, method: 'GET'
+      {url: `/posts/${postId}`, method: 'GET', signal
     },
       );
     }
-  export type PostsControllerCreateResult = NonNullable<Awaited<ReturnType<typeof postsControllerCreate>>>
-export type PostsControllerGetAllPostsResult = NonNullable<Awaited<ReturnType<typeof postsControllerGetAllPosts>>>
-export type PostsControllerUserPostsResult = NonNullable<Awaited<ReturnType<typeof postsControllerUserPosts>>>
-export type PostsControllerPostResult = NonNullable<Awaited<ReturnType<typeof postsControllerPost>>>
+  
+
+export const getPostsControllerPostQueryKey = (postId: string,) => {
+    return [`/posts/${postId}`] as const;
+    }
+
+    
+export const getPostsControllerPostQueryOptions = <TData = Awaited<ReturnType<typeof postsControllerPost>>, TError = unknown>(postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getPostsControllerPostQueryKey(postId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postsControllerPost>>> = ({ signal }) => postsControllerPost(postId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PostsControllerPostQueryResult = NonNullable<Awaited<ReturnType<typeof postsControllerPost>>>
+export type PostsControllerPostQueryError = unknown
+
+
+export function usePostsControllerPost<TData = Awaited<ReturnType<typeof postsControllerPost>>, TError = unknown>(
+ postId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerPost>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerPost>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePostsControllerPost<TData = Awaited<ReturnType<typeof postsControllerPost>>, TError = unknown>(
+ postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof postsControllerPost>>,
+          TError,
+          Awaited<ReturnType<typeof postsControllerPost>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePostsControllerPost<TData = Awaited<ReturnType<typeof postsControllerPost>>, TError = unknown>(
+ postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get a post by its ID
+ */
+
+export function usePostsControllerPost<TData = Awaited<ReturnType<typeof postsControllerPost>>, TError = unknown>(
+ postId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postsControllerPost>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getPostsControllerPostQueryOptions(postId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+

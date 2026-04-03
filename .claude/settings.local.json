@@ -22,7 +22,13 @@
       "Bash(curl -s -w \"\\\\n--- HTTP %{http_code} ---\" -X POST https://frontend-test-be.stage.thinkeasy.cz/posts -H \"Content-Type: application/json\" -d '{\"\"title\"\":\"\"test\"\",\"\"content\"\":\"\"test\"\"}')",
       "Bash(curl -s -w \"\\\\n--- HTTP %{http_code} ---\" -X POST https://frontend-test-be.stage.thinkeasy.cz/auth/login -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"bad@bad.com\"\",\"\"password\"\":\"\"wrong\"\"}')",
       "Bash(source $HOME/.nvm/nvm.sh)",
-      "Bash(nvm use:*)"
+      "Bash(nvm use:*)",
+      "WebSearch",
+      "WebFetch(domain:docs.expo.dev)",
+      "WebFetch(domain:expo.dev)",
+      "Read(//Users/jancik/.nvm/versions/node/**)",
+      "Read(//Users/jancik/.local/share/fnm/**)",
+      "Read(//opt/homebrew/Cellar/**)"
     ]
   }
 }
