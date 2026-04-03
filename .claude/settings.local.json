@@ -28,7 +28,8 @@
       "WebFetch(domain:expo.dev)",
       "Read(//Users/jancik/.nvm/versions/node/**)",
       "Read(//Users/jancik/.local/share/fnm/**)",
-      "Read(//opt/homebrew/Cellar/**)"
+      "Read(//opt/homebrew/Cellar/**)",
+      "Bash(export PATH=\"/usr/local/bin:/opt/homebrew/bin:$PATH\")"
     ]
   }
 }
