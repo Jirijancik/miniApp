@@ -8,6 +8,7 @@ import Toast from "react-native-toast-message";
 
 import { useIsAuthenticated, useIsHydrated } from "@/hooks/useAuth";
 import { showErrorToast } from "@/utils/toast";
+import { getErrorMessage } from "@/utils/errors";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,9 +20,7 @@ const queryClient = new QueryClient({
     },
     mutations: {
       onError: (error: unknown) => {
-        const message =
-          error instanceof Error ? error.message : "Something went wrong";
-        showErrorToast(message);
+        showErrorToast(getErrorMessage(error));
       },
     },
   },

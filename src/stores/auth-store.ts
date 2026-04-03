@@ -10,6 +10,7 @@ import {
 import type { SignupInput } from "@/api/generated/model";
 import { refreshAxiosInstance } from "@/api/axios-instance";
 import { showErrorToast } from "@/utils/toast";
+import { getErrorMessage } from "@/utils/errors";
 
 interface JwtPayload {
   sub: string;
@@ -71,9 +72,7 @@ export const useAuthStore = create<AuthStore>()(
           const data = await authControllerLogin({ email, password });
           get().setTokens(data.accessToken, data.refreshToken);
         } catch (error: unknown) {
-          const message =
-            error instanceof Error ? error.message : "Login failed";
-          showErrorToast(message);
+          showErrorToast(getErrorMessage(error));
           throw error;
         } finally {
           set({ isLoading: false });
@@ -86,9 +85,7 @@ export const useAuthStore = create<AuthStore>()(
           const response = await authControllerSignup(data);
           get().setTokens(response.accessToken, response.refreshToken);
         } catch (error: unknown) {
-          const message =
-            error instanceof Error ? error.message : "Signup failed";
-          showErrorToast(message);
+          showErrorToast(getErrorMessage(error));
           throw error;
         } finally {
           set({ isLoading: false });

@@ -17,6 +17,7 @@ import { useUserId } from "@/hooks/useAuth";
 import { showSuccessToast } from "@/utils/toast";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export default function CreatePostScreen() {
   const router = useRouter();
@@ -56,65 +57,67 @@ export default function CreatePostScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-white"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        contentContainerClassName="px-6 py-8"
-        keyboardShouldPersistTaps="handled"
+    <ErrorBoundary>
+      <KeyboardAvoidingView
+        className="flex-1 bg-white"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View className="mb-6">
-          <Text className="text-2xl font-bold text-gray-900">
-            Create a New Post
-          </Text>
-          <Text className="mt-1 text-sm text-gray-500">
-            Share your thoughts with the community
-          </Text>
-        </View>
+        <ScrollView
+          contentContainerClassName="px-6 py-8"
+          keyboardShouldPersistTaps="handled"
+        >
+          <View className="mb-6">
+            <Text className="text-2xl font-bold text-gray-900">
+              Create a New Post
+            </Text>
+            <Text className="mt-1 text-sm text-gray-500">
+              Share your thoughts with the community
+            </Text>
+          </View>
 
-        <Controller
-          control={control}
-          name="title"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              label="Title"
-              placeholder="Enter a title..."
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.title?.message}
-            />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="content"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              label="Content"
-              placeholder="Write your post content..."
-              multiline
-              numberOfLines={6}
-              textAlignVertical="top"
-              style={{ minHeight: 120 }}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.content?.message}
-            />
-          )}
-        />
-
-        <View className="mt-2">
-          <Button
-            title="Publish"
-            onPress={handleSubmit(onSubmit)}
-            isLoading={mutation.isPending}
+          <Controller
+            control={control}
+            name="title"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Title"
+                placeholder="Enter a title..."
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.title?.message}
+              />
+            )}
           />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+
+          <Controller
+            control={control}
+            name="content"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Content"
+                placeholder="Write your post content..."
+                multiline
+                numberOfLines={6}
+                textAlignVertical="top"
+                style={{ minHeight: 120 }}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.content?.message}
+              />
+            )}
+          />
+
+          <View className="mt-2">
+            <Button
+              title="Publish"
+              onPress={handleSubmit(onSubmit)}
+              isLoading={mutation.isPending}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ErrorBoundary>
   );
 }
