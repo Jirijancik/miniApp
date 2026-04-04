@@ -7,7 +7,7 @@ interface InputProps extends TextInputProps {
   error?: string;
 }
 
-const Input = forwardRef<TextInput, InputProps>(({ label, error, ...props }, ref) => {
+const Input = forwardRef<TextInput, InputProps>(({ label, error, className, ...props }, ref) => {
   const borderClass = error ? "border-red-500" : "border-gray-300";
 
   return (
@@ -16,7 +16,7 @@ const Input = forwardRef<TextInput, InputProps>(({ label, error, ...props }, ref
       <TextInput
         ref={ref}
         accessibilityLabel={label}
-        className={`rounded-lg border px-4 py-3 text-base text-gray-900 ${borderClass}`}
+        className={`rounded-lg border px-4 py-3 text-base text-gray-900 ${borderClass} ${className ?? ""}`}
         placeholderTextColor="#9ca3af"
         {...props}
       />

@@ -1,12 +1,8 @@
 import { ScrollView, Text, View } from "react-native";
 
 import type { PostResponse } from "@/api/generated/model";
-import {
-  getAvatarBg,
-  getInitials,
-  getDisplayAuthorId,
-  formatRelativeDate,
-} from "@/utils/post-helpers";
+import PostAuthorHeader from "@/components/post/PostAuthorHeader";
+import { formatRelativeDate } from "@/utils/post-helpers";
 
 interface PostDetailProps {
   post: PostResponse;
@@ -16,23 +12,7 @@ export default function PostDetail({ post }: PostDetailProps) {
   return (
     <ScrollView className="flex-1 bg-feed" contentContainerClassName="px-3 pt-3 pb-8">
       <View className="overflow-hidden rounded-xl bg-white p-4">
-        {/* Author header */}
-        <View className="flex-row items-center">
-          <View
-            className="h-8 w-8 items-center justify-center rounded-full"
-            style={{ backgroundColor: getAvatarBg(post.authorId) }}
-          >
-            <Text className="text-xs font-bold text-white">{getInitials(post.authorId)}</Text>
-          </View>
-          <View className="ml-2.5">
-            <Text className="text-sm font-semibold text-neutral-800">
-              {getDisplayAuthorId(post.authorId)}
-            </Text>
-            <Text className="mt-0.5 text-xs text-neutral-400">
-              {formatRelativeDate(post.createdAt)}
-            </Text>
-          </View>
-        </View>
+        <PostAuthorHeader authorId={post.authorId} createdAt={post.createdAt} />
 
         {/* Title */}
         <Text className="mt-4 text-xl font-bold leading-7 text-neutral-950">{post.title}</Text>

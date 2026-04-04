@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react-native";
 
-import useSearch from "@/hooks/useSearch";
+import { useSearch } from "@/hooks/useSearch";
 
 beforeEach(() => {
   jest.useFakeTimers();

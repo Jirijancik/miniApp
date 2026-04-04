@@ -7,6 +7,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 import ErrorBoundary from "@/components/ErrorBoundary";
 import CreatePostSheet from "@/components/post/CreatePostSheet";
+import { THEME } from "@/constants/colors";
 
 export default function AppLayout() {
   return (
@@ -14,8 +15,8 @@ export default function AppLayout() {
       <View className="flex-1">
         <Tabs
           screenOptions={{
-            tabBarActiveTintColor: "#2563eb",
-            tabBarInactiveTintColor: "#6b7280",
+            tabBarActiveTintColor: THEME.tabBar.activeTint,
+            tabBarInactiveTintColor: THEME.tabBar.inactiveTint,
           }}
         >
           <Tabs.Screen

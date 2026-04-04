@@ -13,7 +13,7 @@ function makeJwt(payload: Record<string, unknown>): string {
 export const mockUserId = "user-123";
 
 export const mockAccessToken = makeJwt({
-  sub: mockUserId,
+  userId: mockUserId,
   exp: Math.floor(Date.now() / 1000) + 3600,
   iat: Math.floor(Date.now() / 1000),
 });

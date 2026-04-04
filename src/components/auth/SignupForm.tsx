@@ -12,10 +12,10 @@ import {
 import { Link } from "expo-router";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import FormInput from "@/components/ui/FormInput";
 import { useAuthLoading, getSignup } from "@/hooks/useAuth";
 import { signupSchema, type SignupFormData } from "@/utils/validation";
 
@@ -37,8 +37,9 @@ export default function SignupForm() {
   const onSubmit = async (data: SignupFormData) => {
     try {
       await getSignup()(data);
-    } catch {
-      // Error toast already shown by the store
+    } catch (error) {
+      // Error toast is shown by the auth store
+      if (__DEV__) console.error("Signup failed:", error);
     }
   };
 
@@ -56,84 +57,56 @@ export default function SignupForm() {
           <Text className="mt-2 text-center text-gray-500">Sign up to get started</Text>
         </View>
 
-        <Controller
+        <FormInput
           control={control}
           name="firstname"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              label="First Name"
-              placeholder="John"
-              autoCapitalize="words"
-              autoComplete="given-name"
-              returnKeyType="next"
-              onSubmitEditing={() => lastnameRef.current?.focus()}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.firstname?.message}
-            />
-          )}
+          label="First Name"
+          placeholder="John"
+          autoCapitalize="words"
+          autoComplete="given-name"
+          returnKeyType="next"
+          onSubmitEditing={() => lastnameRef.current?.focus()}
+          error={errors.firstname?.message}
         />
 
-        <Controller
+        <FormInput
+          ref={lastnameRef}
           control={control}
           name="lastname"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              ref={lastnameRef}
-              label="Last Name"
-              placeholder="Doe"
-              autoCapitalize="words"
-              autoComplete="family-name"
-              returnKeyType="next"
-              onSubmitEditing={() => emailRef.current?.focus()}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.lastname?.message}
-            />
-          )}
+          label="Last Name"
+          placeholder="Doe"
+          autoCapitalize="words"
+          autoComplete="family-name"
+          returnKeyType="next"
+          onSubmitEditing={() => emailRef.current?.focus()}
+          error={errors.lastname?.message}
         />
 
-        <Controller
+        <FormInput
+          ref={emailRef}
           control={control}
           name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              ref={emailRef}
-              label="Email"
-              placeholder="you@example.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              returnKeyType="next"
-              onSubmitEditing={() => passwordRef.current?.focus()}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.email?.message}
-            />
-          )}
+          label="Email"
+          placeholder="you@example.com"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoComplete="email"
+          returnKeyType="next"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+          error={errors.email?.message}
         />
 
-        <Controller
+        <FormInput
+          ref={passwordRef}
           control={control}
           name="password"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              ref={passwordRef}
-              label="Password"
-              placeholder="At least 6 characters"
-              secureTextEntry
-              autoComplete="new-password"
-              returnKeyType="done"
-              onSubmitEditing={handleSubmit(onSubmit)}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.password?.message}
-            />
-          )}
+          label="Password"
+          placeholder="At least 6 characters"
+          secureTextEntry
+          autoComplete="new-password"
+          returnKeyType="done"
+          onSubmitEditing={handleSubmit(onSubmit)}
+          error={errors.password?.message}
         />
 
         <View className="mt-2">

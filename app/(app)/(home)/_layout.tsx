@@ -1,13 +1,15 @@
 import { Stack } from "expo-router";
 
+import { THEME } from "@/constants/colors";
+
 export default function HomeLayout() {
   return (
     <Stack
       screenOptions={{
-        headerStyle: { backgroundColor: "#fff" },
+        headerStyle: { backgroundColor: THEME.header.bg },
         headerShadowVisible: false,
-        headerTintColor: "#1A1A1B",
-        headerTitleStyle: { fontWeight: "700", color: "#1A1A1B" },
+        headerTintColor: THEME.header.tint,
+        headerTitleStyle: { fontWeight: "700", color: THEME.header.tint },
       }}
     >
       <Stack.Screen name="index" options={{ title: "Feed" }} />

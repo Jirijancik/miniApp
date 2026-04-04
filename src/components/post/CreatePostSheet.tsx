@@ -1,13 +1,16 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
 import CreatePostForm from "@/components/post/CreatePostForm";
 import FAB from "@/components/ui/FAB";
 
+const SNAP_POINTS = ["90%"];
+const BACKGROUND_STYLE = { borderTopLeftRadius: 20, borderTopRightRadius: 20 };
+const HANDLE_INDICATOR_STYLE = { backgroundColor: "#d1d5db", width: 40 };
+
 export default function CreatePostSheet() {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["90%"], []);
 
   const handleOpenSheet = useCallback(() => {
     bottomSheetRef.current?.expand();
@@ -31,11 +34,11 @@ export default function CreatePostSheet() {
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
-        snapPoints={snapPoints}
+        snapPoints={SNAP_POINTS}
         enablePanDownToClose
         backdropComponent={renderBackdrop}
-        backgroundStyle={{ borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
-        handleIndicatorStyle={{ backgroundColor: "#d1d5db", width: 40 }}
+        backgroundStyle={BACKGROUND_STYLE}
+        handleIndicatorStyle={HANDLE_INDICATOR_STYLE}
       >
         <CreatePostForm onSuccess={handleCloseSheet} />
       </BottomSheet>

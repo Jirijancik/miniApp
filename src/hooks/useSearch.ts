@@ -7,7 +7,7 @@ interface UseSearchReturn {
   clearSearch: () => void;
 }
 
-export default function useSearch(delay = 300): UseSearchReturn {
+export function useSearch(delay = 300): UseSearchReturn {
   const [searchQuery, setLocalQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);

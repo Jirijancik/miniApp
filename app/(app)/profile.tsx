@@ -1,21 +1,13 @@
-import { useCallback } from "react";
-
-import { useRouter } from "expo-router";
-
 import ErrorBoundary from "@/components/ErrorBoundary";
-import ProfileContent from "@/components/ProfileContent";
+import ProfileContent from "@/components/post/ProfileContent";
+import { usePostNavigation } from "@/hooks/usePostNavigation";
 
 export default function ProfileScreen() {
-  const router = useRouter();
-
-  const handlePostPress = useCallback(
-    (postId: string) => router.push(`/(app)/(home)/post/${postId}`),
-    [router],
-  );
+  const { navigateToPost } = usePostNavigation();
 
   return (
     <ErrorBoundary>
-      <ProfileContent onPostPress={handlePostPress} />
+      <ProfileContent onPostPress={navigateToPost} />
     </ErrorBoundary>
   );
 }

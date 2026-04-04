@@ -1,25 +1,15 @@
-import { useCallback } from "react";
-
 import { View } from "react-native";
-
-import { useRouter } from "expo-router";
 
 import PostList from "@/components/post/PostList";
 import SearchBar from "@/components/SearchBar";
+import { usePostNavigation } from "@/hooks/usePostNavigation";
 import { useFilteredPosts } from "@/hooks/usePosts";
-import useSearch from "@/hooks/useSearch";
+import { useSearch } from "@/hooks/useSearch";
 
 export default function FeedContent() {
-  const router = useRouter();
+  const { navigateToPost } = usePostNavigation();
   const { searchQuery, debouncedQuery, setSearchQuery, clearSearch } = useSearch();
   const { data, isLoading, isRefetching, error, refetch } = useFilteredPosts(debouncedQuery);
-
-  const handlePostPress = useCallback(
-    (postId: string) => {
-      router.push(`/(app)/(home)/post/${postId}`);
-    },
-    [router],
-  );
 
   return (
     <View className="flex-1 bg-feed">
@@ -30,7 +20,7 @@ export default function FeedContent() {
         isRefetching={isRefetching}
         isError={!!error}
         onRefresh={refetch}
-        onPostPress={handlePostPress}
+        onPostPress={navigateToPost}
         emptyMessage={
           error
             ? "Failed to load posts. Pull to refresh."
