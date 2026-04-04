@@ -5,6 +5,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { useIsAuthenticated, useIsHydrated } from "@/hooks/useAuth";
 import { showErrorToast } from "@/utils/toast";
@@ -17,6 +18,7 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       staleTime: 30_000,
+      gcTime: 5 * 60_000,
     },
     mutations: {
       onError: (error: unknown) => {
@@ -42,16 +44,18 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Protected guard={!isAuthenticated}>
-          <Stack.Screen name="(auth)" />
-        </Stack.Protected>
-        <Stack.Protected guard={isAuthenticated}>
-          <Stack.Screen name="(app)" />
-        </Stack.Protected>
-      </Stack>
-      <Toast />
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Protected guard={!isAuthenticated}>
+            <Stack.Screen name="(auth)" />
+          </Stack.Protected>
+          <Stack.Protected guard={isAuthenticated}>
+            <Stack.Screen name="(app)" />
+          </Stack.Protected>
+        </Stack>
+        <Toast />
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }

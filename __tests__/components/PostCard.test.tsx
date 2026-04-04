@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 
-import PostCard from "@/components/PostCard";
+import PostCard from "@/components/post/PostCard";
 import type { PostResponse } from "@/api/generated/model";
 
 const mockPost: PostResponse = {
@@ -30,18 +30,18 @@ describe("PostCard", () => {
     expect(screen.getByText("user-abc")).toBeOnTheScreen();
   });
 
-  it("renders formatted date", () => {
+  it("renders relative date", () => {
     render(<PostCard post={mockPost} onPress={jest.fn()} />);
 
-    // toLocaleDateString() output — just check something date-like is present
-    expect(screen.getByText(/2026/)).toBeOnTheScreen();
+    // formatRelativeDate returns compact time like "3d", "5m", "now", "Jan 15"
+    expect(screen.getByText(/\d+[mhdw]|now|Jan/i)).toBeOnTheScreen();
   });
 
-  it("calls onPress when pressed", () => {
+  it("calls onPress with post id when pressed", () => {
     const onPress = jest.fn();
     render(<PostCard post={mockPost} onPress={onPress} />);
 
     fireEvent.press(screen.getByText("Test Post Title"));
-    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(onPress).toHaveBeenCalledWith("post-1");
   });
 });

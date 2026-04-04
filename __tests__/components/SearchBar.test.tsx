@@ -18,7 +18,7 @@ describe("SearchBar", () => {
       <SearchBar value="" onChangeText={jest.fn()} onClear={jest.fn()} />,
     );
 
-    expect(screen.getByPlaceholderText("Search posts...")).toBeOnTheScreen();
+    expect(screen.getByPlaceholderText("Search")).toBeOnTheScreen();
   });
 
   it("calls onChangeText when typing", () => {
@@ -28,7 +28,7 @@ describe("SearchBar", () => {
     );
 
     fireEvent.changeText(
-      screen.getByPlaceholderText("Search posts..."),
+      screen.getByPlaceholderText("Search"),
       "hello",
     );
     expect(onChangeText).toHaveBeenCalledWith("hello");

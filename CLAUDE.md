@@ -30,15 +30,15 @@ npm test                  # Run tests
 ## Folder Structure
 
 ```
-app/                      # Expo Router file-based routing
+app/                      # Expo Router file-based routing (thin route shells only)
   _layout.tsx             # Root: providers, Toast, auth guard
   (auth)/                 # Unauthenticated screens
     login.tsx, signup.tsx
   (app)/                  # Protected screens (tab navigator)
+    _layout.tsx           # Tabs + bottom sheet for create post
     (home)/
       index.tsx           # All posts feed + search
       post/[id].tsx       # Post detail
-    create.tsx            # Create post form
     profile.tsx           # User's posts + logout
 src/
   api/
@@ -48,15 +48,25 @@ src/
   stores/
     auth-store.ts         # Tokens, login/signup/logout/refresh (Zustand + persist)
   components/
-    ui/                   # Primitive components: Button, Input, Spinner, SkeletonCard
-    PostCard.tsx, PostList.tsx, SearchBar.tsx, ErrorBoundary.tsx
+    ui/                   # Generic primitives: Button, Input, Spinner, SkeletonCard, FAB
+    auth/                 # Auth-domain components: LoginForm, SignupForm
+    post/                 # Post-domain components: PostCard, PostList, PostDetail, PostDetailSkeleton, CreatePostForm
+    SearchBar.tsx         # Generic cross-domain components
+    ErrorBoundary.tsx
   hooks/                  # useAuth.ts, usePosts.ts (React Query wrappers), useSearch.ts
-  utils/                  # toast.ts, validation.ts
+  utils/                  # toast.ts, validation.ts, errors.ts, post-helpers.ts
   constants/              # config.ts (API_BASE_URL)
 __tests__/                # Mirrors src/ structure
 ```
 
 ## Architecture Rules
+
+### Thin Route Files
+- **Route files in `app/` are thin shells** — they handle routing concerns (params, `Stack.Screen` options, error boundaries) and compose components from `src/components/`.
+- All UI and form logic lives in `src/components/{domain}/`. Route files import and render these components.
+- Components are organized into domain subfolders: `ui/` (generic primitives), `auth/` (auth forms), `post/` (post-related). Cross-domain components (`SearchBar`, `ErrorBoundary`) stay at the `components/` root.
+- When a screen grows beyond ~30 lines, extract its UI into a component in the appropriate domain folder.
+- No `src/screens/` directory — route files ARE the screens, kept thin by delegation.
 
 ### Navigation
 - Auth guard via `Stack.Protected` in root layout — no manual redirects
@@ -154,7 +164,7 @@ Check endpoint shapes, request/response formats, and error responses to ensure t
 - Functional components only. No class components except `ErrorBoundary`.
 - Props interface defined above the component, co-located in the same file.
 - Destructure props in the function signature.
-- Use NativeWind `className` for styling — no `StyleSheet.create` unless NativeWind can't handle it.
+- Use NativeWind `className` for styling — prefer `className` over `StyleSheet.create`. Only use inline `style` for truly dynamic values (e.g., computed background colors).
 - Keep components under ~100 lines. If longer, extract sub-components or hooks.
 
 ### State Management

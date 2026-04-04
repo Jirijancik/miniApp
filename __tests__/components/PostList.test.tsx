@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 
-import PostList from "@/components/PostList";
+import PostList from "@/components/post/PostList";
 import type { PostResponse } from "@/api/generated/model";
 
 const mockPosts: PostResponse[] = [
@@ -63,7 +63,7 @@ describe("PostList", () => {
       />,
     );
 
-    expect(screen.getByText("No posts yet")).toBeOnTheScreen();
+    expect(screen.getAllByText(/No posts yet/)).toBeTruthy();
   });
 
   it("calls onPostPress when a post is tapped", () => {
@@ -77,6 +77,6 @@ describe("PostList", () => {
     );
 
     fireEvent.press(screen.getByText("First Post"));
-    expect(onPostPress).toHaveBeenCalledWith(mockPosts[0]);
+    expect(onPostPress).toHaveBeenCalledWith(mockPosts[0].id);
   });
 });
