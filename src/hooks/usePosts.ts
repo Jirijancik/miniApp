@@ -11,10 +11,7 @@ import {
 } from "@/api/generated/posts/posts";
 
 // Re-export query key generators for cache invalidation
-export {
-  getPostsControllerGetAllPostsQueryKey,
-  getPostsControllerUserPostsQueryKey,
-};
+export { getPostsControllerGetAllPostsQueryKey, getPostsControllerUserPostsQueryKey };
 
 // Convenience wrappers around Orval-generated React Query hooks
 export const useAllPosts = () => usePostsControllerGetAllPosts();
@@ -37,10 +34,7 @@ function useSearchIndex(posts: PostResponse[] | undefined) {
   return useMemo(() => {
     if (!posts) return [];
     return [...posts]
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .map((p) => ({
         post: p,
         titleLower: p.title.toLowerCase(),
@@ -59,10 +53,7 @@ export function useFilteredPosts(searchQuery: string) {
     if (!searchQuery) return index.map((entry) => entry.post);
     const q = searchQuery.toLowerCase();
     return index
-      .filter(
-        (entry) =>
-          entry.titleLower.includes(q) || entry.contentLower.includes(q),
-      )
+      .filter((entry) => entry.titleLower.includes(q) || entry.contentLower.includes(q))
       .map((entry) => entry.post);
   }, [index, searchQuery]);
 

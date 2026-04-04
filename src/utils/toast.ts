@@ -1,9 +1,6 @@
-import Toast, { ToastShowParams } from "react-native-toast-message";
+import Toast, { type ToastShowParams } from "react-native-toast-message";
 
-export const showSuccessToast = (
-  message: string,
-  options?: ToastShowParams,
-) => {
+export const showSuccessToast = (message: string, options?: ToastShowParams) => {
   Toast.show({
     type: "success",
     text1: message,

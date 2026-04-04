@@ -1,10 +1,9 @@
 import { Text, View } from "react-native";
 
-import { useUserPosts } from "@/hooks/usePosts";
-import { useUserId } from "@/hooks/useAuth";
-import { useAuthStore } from "@/stores/auth-store";
 import PostList from "@/components/post/PostList";
 import Button from "@/components/ui/Button";
+import { useUserId, getLogout } from "@/hooks/useAuth";
+import { useUserPosts } from "@/hooks/usePosts";
 
 interface ProfileContentProps {
   onPostPress: (postId: string) => void;
@@ -12,12 +11,10 @@ interface ProfileContentProps {
 
 export default function ProfileContent({ onPostPress }: ProfileContentProps) {
   const userId = useUserId();
-  const { data, isLoading, isRefetching, error, refetch } = useUserPosts(
-    userId ?? "",
-  );
+  const { data, isLoading, isRefetching, error, refetch } = useUserPosts(userId ?? "");
 
   const handleLogout = () => {
-    useAuthStore.getState().logout();
+    getLogout()();
   };
 
   return (
@@ -30,13 +27,10 @@ export default function ProfileContent({ onPostPress }: ProfileContentProps) {
         posts={data ?? []}
         isLoading={isLoading}
         isRefetching={isRefetching}
+        isError={!!error}
         onRefresh={refetch}
         onPostPress={onPostPress}
-        emptyMessage={
-          error
-            ? "Failed to load posts. Pull to refresh."
-            : "You haven't posted yet"
-        }
+        emptyMessage={error ? "Failed to load posts. Pull to refresh." : "You haven't posted yet"}
       />
     </View>
   );

@@ -6,8 +6,7 @@ const API = process.env.EXPO_PUBLIC_API_URL!;
 function makeJwt(payload: Record<string, unknown>): string {
   const header = { alg: "HS256", typ: "JWT" };
   const encode = (obj: Record<string, unknown>) =>
-    Buffer.from(JSON.stringify(obj))
-      .toString("base64url");
+    Buffer.from(JSON.stringify(obj)).toString("base64url");
   return `${encode(header)}.${encode(payload)}.fake-signature`;
 }
 
@@ -47,10 +46,7 @@ export const handlers = [
   http.post(`${API}/auth/login`, async ({ request }) => {
     const body = (await request.json()) as { email: string; password: string };
     if (body.email === "bad@example.com") {
-      return HttpResponse.json(
-        { message: "Invalid credentials" },
-        { status: 401 },
-      );
+      return HttpResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
     return HttpResponse.json({
       accessToken: mockAccessToken,
@@ -62,10 +58,7 @@ export const handlers = [
   http.post(`${API}/auth/signup`, async ({ request }) => {
     const body = (await request.json()) as { email: string };
     if (body.email === "exists@example.com") {
-      return HttpResponse.json(
-        { message: "Email already in use" },
-        { status: 409 },
-      );
+      return HttpResponse.json({ message: "Email already in use" }, { status: 409 });
     }
     return HttpResponse.json({
       accessToken: mockAccessToken,

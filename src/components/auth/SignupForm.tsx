@@ -1,16 +1,29 @@
-import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useRef } from "react";
+
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  type TextInput,
+  View,
+} from "react-native";
+
 import { Link } from "expo-router";
 
-import { signupSchema, type SignupFormData } from "@/utils/validation";
-import { useAuthStore } from "@/stores/auth-store";
-import { useAuthLoading } from "@/hooks/useAuth";
-import Input from "@/components/ui/Input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, Controller } from "react-hook-form";
+
 import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { useAuthLoading, getSignup } from "@/hooks/useAuth";
+import { signupSchema, type SignupFormData } from "@/utils/validation";
 
 export default function SignupForm() {
   const isLoading = useAuthLoading();
+  const lastnameRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
 
   const {
     control,
@@ -23,7 +36,7 @@ export default function SignupForm() {
 
   const onSubmit = async (data: SignupFormData) => {
     try {
-      await useAuthStore.getState().signup(data);
+      await getSignup()(data);
     } catch {
       // Error toast already shown by the store
     }
@@ -39,12 +52,8 @@ export default function SignupForm() {
         keyboardShouldPersistTaps="handled"
       >
         <View className="mb-10">
-          <Text className="text-3xl font-bold text-center text-gray-900">
-            Create Account
-          </Text>
-          <Text className="mt-2 text-center text-gray-500">
-            Sign up to get started
-          </Text>
+          <Text className="text-3xl font-bold text-center text-gray-900">Create Account</Text>
+          <Text className="mt-2 text-center text-gray-500">Sign up to get started</Text>
         </View>
 
         <Controller
@@ -56,6 +65,8 @@ export default function SignupForm() {
               placeholder="John"
               autoCapitalize="words"
               autoComplete="given-name"
+              returnKeyType="next"
+              onSubmitEditing={() => lastnameRef.current?.focus()}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -69,10 +80,13 @@ export default function SignupForm() {
           name="lastname"
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
+              ref={lastnameRef}
               label="Last Name"
               placeholder="Doe"
               autoCapitalize="words"
               autoComplete="family-name"
+              returnKeyType="next"
+              onSubmitEditing={() => emailRef.current?.focus()}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -86,11 +100,14 @@ export default function SignupForm() {
           name="email"
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
+              ref={emailRef}
               label="Email"
               placeholder="you@example.com"
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current?.focus()}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -104,10 +121,13 @@ export default function SignupForm() {
           name="password"
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
+              ref={passwordRef}
               label="Password"
               placeholder="At least 6 characters"
               secureTextEntry
               autoComplete="new-password"
+              returnKeyType="done"
+              onSubmitEditing={handleSubmit(onSubmit)}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -117,11 +137,7 @@ export default function SignupForm() {
         />
 
         <View className="mt-2">
-          <Button
-            title="Create Account"
-            onPress={handleSubmit(onSubmit)}
-            isLoading={isLoading}
-          />
+          <Button title="Create Account" onPress={handleSubmit(onSubmit)} isLoading={isLoading} />
         </View>
 
         <View className="mt-6 flex-row justify-center">

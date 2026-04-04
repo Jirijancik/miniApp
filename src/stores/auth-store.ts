@@ -1,19 +1,16 @@
+import { jwtDecode } from "jwt-decode";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { jwtDecode } from "jwt-decode";
 
-import {
-  authControllerLogin,
-  authControllerSignup,
-} from "@/api/generated/auth/auth";
+import { authControllerLogin, authControllerSignup } from "@/api/generated/auth/auth";
 import type { SignupInput } from "@/api/generated/model";
-import { refreshAxiosInstance } from "@/api/axios-instance";
-import { showErrorToast } from "@/utils/toast";
 import { getErrorMessage } from "@/utils/errors";
+import { showErrorToast } from "@/utils/toast";
+
+import { secureStorage } from "./secure-storage";
 
 interface JwtPayload {
-  sub: string;
+  userId: string;
   exp?: number;
   iat?: number;
 }
@@ -30,7 +27,6 @@ interface AuthActions {
   login: (email: string, password: string) => Promise<void>;
   signup: (data: SignupInput) => Promise<void>;
   logout: () => void;
-  refreshAccessToken: () => Promise<string | null>;
   setTokens: (accessToken: string, refreshToken: string) => void;
   setHydrated: (value: boolean) => void;
 }
@@ -40,7 +36,7 @@ type AuthStore = AuthState & AuthActions;
 const extractUserId = (token: string): string | null => {
   try {
     const decoded = jwtDecode<JwtPayload>(token);
-    return decoded.sub ?? null;
+    return decoded.userId ?? null;
   } catch {
     return null;
   }
@@ -99,33 +95,10 @@ export const useAuthStore = create<AuthStore>()(
           userId: null,
         });
       },
-
-      refreshAccessToken: async () => {
-        const { refreshToken } = get();
-        if (!refreshToken) {
-          get().logout();
-          return null;
-        }
-
-        try {
-          const { data } = await refreshAxiosInstance.post<{
-            access_token: string;
-          }>("/auth/refresh-token", { token: refreshToken });
-
-          // Refresh endpoint returns snake_case
-          const newAccessToken = data.access_token;
-          set({ accessToken: newAccessToken, userId: extractUserId(newAccessToken) });
-          return newAccessToken;
-        } catch {
-          showErrorToast("Session expired. Please log in again.");
-          get().logout();
-          return null;
-        }
-      },
     }),
     {
       name: "auth-storage",
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
       partialize: (state) => ({
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,

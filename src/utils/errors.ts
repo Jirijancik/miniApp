@@ -37,9 +37,7 @@ export function getErrorMessage(error: unknown): string {
 
     // Try server-provided message first
     if (data?.message) {
-      const msg = Array.isArray(data.message)
-        ? data.message[0]
-        : data.message;
+      const msg = Array.isArray(data.message) ? data.message[0] : data.message;
       if (typeof msg === "string" && msg.length > 0) {
         return msg;
       }

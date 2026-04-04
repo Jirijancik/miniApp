@@ -7,29 +7,15 @@ jest.mock("@/api/generated/auth/auth", () => ({
   authControllerSignup: jest.fn(),
 }));
 
-// Mock the refreshAxiosInstance used by refreshAccessToken
 jest.mock("@/api/axios-instance", () => ({
   axiosInstance: { interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } } },
-  refreshAxiosInstance: { post: jest.fn() },
 }));
 
 import { useAuthStore } from "@/stores/auth-store";
 import { showErrorToast } from "@/utils/toast";
-import {
-  authControllerLogin,
-  authControllerSignup,
-} from "@/api/generated/auth/auth";
-import { refreshAxiosInstance } from "@/api/axios-instance";
-
-const mockedLogin = authControllerLogin as jest.MockedFunction<
-  typeof authControllerLogin
->;
-const mockedSignup = authControllerSignup as jest.MockedFunction<
-  typeof authControllerSignup
->;
-const mockedRefreshPost = (refreshAxiosInstance as unknown as { post: jest.Mock })
-  .post;
-
+import { authControllerLogin, authControllerSignup } from "@/api/generated/auth/auth";
+const mockedLogin = authControllerLogin as jest.MockedFunction<typeof authControllerLogin>;
+const mockedSignup = authControllerSignup as jest.MockedFunction<typeof authControllerSignup>;
 // A real JWT that jwtDecode can parse
 function makeJwt(payload: Record<string, unknown>): string {
   const header = { alg: "HS256", typ: "JWT" };
@@ -40,7 +26,7 @@ function makeJwt(payload: Record<string, unknown>): string {
 
 const mockUserId = "user-123";
 const mockAccessToken = makeJwt({
-  sub: mockUserId,
+  userId: mockUserId,
   exp: Math.floor(Date.now() / 1000) + 3600,
 });
 const mockRefreshToken = "mock-refresh-token";
@@ -81,9 +67,7 @@ describe("auth-store", () => {
       });
       mockedLogin.mockRejectedValueOnce(axiosError);
 
-      await expect(
-        useAuthStore.getState().login("bad@example.com", "wrong"),
-      ).rejects.toThrow();
+      await expect(useAuthStore.getState().login("bad@example.com", "wrong")).rejects.toThrow();
 
       expect(showErrorToast).toHaveBeenCalledWith("Invalid credentials");
       expect(useAuthStore.getState().accessToken).toBeNull();
@@ -97,9 +81,7 @@ describe("auth-store", () => {
         }),
       );
 
-      const promise = useAuthStore
-        .getState()
-        .login("test@example.com", "pass");
+      const promise = useAuthStore.getState().login("test@example.com", "pass");
       expect(useAuthStore.getState().isLoading).toBe(true);
 
       resolveLogin({
@@ -165,53 +147,6 @@ describe("auth-store", () => {
       expect(state.accessToken).toBeNull();
       expect(state.refreshToken).toBeNull();
       expect(state.userId).toBeNull();
-    });
-  });
-
-  describe("refreshAccessToken", () => {
-    it("updates accessToken on success", async () => {
-      useAuthStore.setState({
-        accessToken: "old-token",
-        refreshToken: mockRefreshToken,
-      });
-
-      mockedRefreshPost.mockResolvedValueOnce({
-        data: { access_token: mockAccessToken },
-      });
-
-      const newToken = await useAuthStore.getState().refreshAccessToken();
-
-      expect(newToken).toBe(mockAccessToken);
-      expect(useAuthStore.getState().accessToken).toBe(mockAccessToken);
-      expect(mockedRefreshPost).toHaveBeenCalledWith("/auth/refresh-token", {
-        token: mockRefreshToken,
-      });
-    });
-
-    it("logs out and shows toast when refresh fails", async () => {
-      useAuthStore.setState({
-        accessToken: "old-token",
-        refreshToken: "expired-refresh",
-      });
-
-      mockedRefreshPost.mockRejectedValueOnce(new Error("Refresh failed"));
-
-      const result = await useAuthStore.getState().refreshAccessToken();
-
-      expect(result).toBeNull();
-      expect(useAuthStore.getState().accessToken).toBeNull();
-      expect(showErrorToast).toHaveBeenCalledWith(
-        "Session expired. Please log in again.",
-      );
-    });
-
-    it("logs out when no refresh token available", async () => {
-      useAuthStore.setState({ refreshToken: null });
-
-      const result = await useAuthStore.getState().refreshAccessToken();
-
-      expect(result).toBeNull();
-      expect(useAuthStore.getState().accessToken).toBeNull();
     });
   });
 });

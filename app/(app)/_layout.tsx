@@ -1,5 +1,7 @@
 import { View } from "react-native";
+
 import { Tabs } from "expo-router";
+
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
@@ -22,11 +24,7 @@ export default function AppLayout() {
               title: "Feed",
               headerShown: false,
               tabBarIcon: ({ color, size, focused }) => (
-                <Ionicons
-                  name={focused ? "home" : "home-outline"}
-                  size={size}
-                  color={color}
-                />
+                <Ionicons name={focused ? "home" : "home-outline"} size={size} color={color} />
               ),
             }}
           />
@@ -35,11 +33,7 @@ export default function AppLayout() {
             options={{
               title: "Profile",
               tabBarIcon: ({ color, size, focused }) => (
-                <Ionicons
-                  name={focused ? "person" : "person-outline"}
-                  size={size}
-                  color={color}
-                />
+                <Ionicons name={focused ? "person" : "person-outline"} size={size} color={color} />
               ),
             }}
           />

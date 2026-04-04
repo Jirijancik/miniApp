@@ -1,6 +1,6 @@
-import type { AxiosRequestConfig } from 'axios';
+import { axiosInstance } from "./axios-instance";
 
-import { axiosInstance } from './axios-instance';
+import type { AxiosRequestConfig } from "axios";
 
 // Orval mutator — all generated API functions call this
 export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {

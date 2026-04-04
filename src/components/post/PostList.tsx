@@ -1,7 +1,9 @@
 import { memo, useCallback } from "react";
+
+import { Text, View } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { Text, View } from "react-native";
 
 import type { PostResponse } from "@/api/generated/model";
 import PostCard from "@/components/post/PostCard";
@@ -11,6 +13,7 @@ interface PostListProps {
   posts: PostResponse[];
   isLoading: boolean;
   isRefetching?: boolean;
+  isError?: boolean;
   onRefresh?: () => void;
   onPostPress: (postId: string) => void;
   emptyMessage?: string;
@@ -19,9 +22,7 @@ interface PostListProps {
 const SKELETON_DATA = Array.from({ length: 6 }, (_, i) => i);
 const SKELETON_CONTENT_PADDING = { paddingTop: 8 };
 
-function EmptyState({ message }: { message: string }) {
-  const isError = message.toLowerCase().includes("failed");
-
+function EmptyState({ message, isError = false }: { message: string; isError?: boolean }) {
   return (
     <View className="flex-1 items-center justify-center px-8 pb-16">
       <Ionicons
@@ -32,9 +33,7 @@ function EmptyState({ message }: { message: string }) {
       <Text className="mt-4 text-base font-semibold text-black">
         {isError ? "Something went wrong" : "No posts yet"}
       </Text>
-      <Text className="mt-1 text-center text-sm leading-relaxed text-neutral-400">
-        {message}
-      </Text>
+      <Text className="mt-1 text-center text-sm leading-relaxed text-neutral-400">{message}</Text>
     </View>
   );
 }
@@ -48,14 +47,13 @@ function PostList({
   posts,
   isLoading,
   isRefetching = false,
+  isError = false,
   onRefresh,
   onPostPress,
   emptyMessage = "No posts found",
 }: PostListProps) {
   const renderItem = useCallback(
-    ({ item }: { item: PostResponse }) => (
-      <PostCard post={item} onPress={onPostPress} />
-    ),
+    ({ item }: { item: PostResponse }) => <PostCard post={item} onPress={onPostPress} />,
     [onPostPress],
   );
 
@@ -73,7 +71,7 @@ function PostList({
   }
 
   if (posts.length === 0) {
-    return <EmptyState message={emptyMessage} />;
+    return <EmptyState message={emptyMessage} isError={isError} />;
   }
 
   return (

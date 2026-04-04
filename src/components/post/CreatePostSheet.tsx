@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef } from "react";
+
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
 import CreatePostForm from "@/components/post/CreatePostForm";
@@ -18,11 +19,7 @@ export default function CreatePostSheet() {
 
   const renderBackdrop = useCallback(
     (props: React.ComponentProps<typeof BottomSheetBackdrop>) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-      />
+      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />
     ),
     [],
   );

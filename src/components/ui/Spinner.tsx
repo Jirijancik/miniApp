@@ -7,11 +7,13 @@ interface SpinnerProps {
 
 export default function Spinner({ label, size = "large" }: SpinnerProps) {
   return (
-    <View className="flex-1 items-center justify-center">
+    <View
+      className="flex-1 items-center justify-center"
+      accessibilityRole="progressbar"
+      accessibilityLabel={label ?? "Loading"}
+    >
       <ActivityIndicator size={size} color="#2563eb" />
-      {label && (
-        <Text className="mt-3 text-sm text-gray-500">{label}</Text>
-      )}
+      {label && <Text className="mt-3 text-sm text-gray-500">{label}</Text>}
     </View>
   );
 }

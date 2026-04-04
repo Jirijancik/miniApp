@@ -89,10 +89,7 @@ describe("axios-instance", () => {
         http.get(`${API}/posts`, () => {
           callCount++;
           if (callCount === 1) {
-            return HttpResponse.json(
-              { message: "Unauthorized" },
-              { status: 401 },
-            );
+            return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
           }
           return HttpResponse.json([{ id: "post-1" }]);
         }),

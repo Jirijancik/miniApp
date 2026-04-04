@@ -1,9 +1,10 @@
 import { createContext, memo, useContext, useEffect, useRef } from "react";
+
 import { Animated, View } from "react-native";
 
 const ShimmerContext = createContext<Animated.Value | null>(null);
 
-function ShimmerBlock({ className }: { className: string }) {
+export function ShimmerBlock({ className }: { className: string }) {
   const opacity = useContext(ShimmerContext);
 
   if (!opacity) return <View className={className} />;
@@ -17,7 +18,11 @@ function ShimmerBlock({ className }: { className: string }) {
 
 function SkeletonCardInner() {
   return (
-    <View className="mx-2.5 mb-2 overflow-hidden rounded-xl bg-white">
+    <View
+      className="mx-2.5 mb-2 overflow-hidden rounded-xl bg-white"
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    >
       {/* Meta row */}
       <View className="flex-row items-center px-3 pt-2.5">
         <ShimmerBlock className="h-5 w-5 rounded-full" />
@@ -62,11 +67,7 @@ export function SkeletonProvider({ children }: { children: React.ReactNode }) {
     return () => animation.stop();
   }, [opacity]);
 
-  return (
-    <ShimmerContext.Provider value={opacity}>
-      {children}
-    </ShimmerContext.Provider>
-  );
+  return <ShimmerContext.Provider value={opacity}>{children}</ShimmerContext.Provider>;
 }
 
 const SkeletonCard = memo(SkeletonCardInner);

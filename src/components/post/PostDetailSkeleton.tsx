@@ -1,71 +1,37 @@
-import { useEffect, useRef } from "react";
-import { Animated, View } from "react-native";
+import { View } from "react-native";
+
+import { SkeletonProvider, ShimmerBlock } from "@/components/ui/SkeletonCard";
 
 export default function PostDetailSkeleton() {
-  const opacity = useRef(new Animated.Value(0.3)).current;
-
-  useEffect(() => {
-    const animation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity, {
-          toValue: 0.3,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-      ]),
-    );
-    animation.start();
-    return () => animation.stop();
-  }, [opacity]);
-
-  const shimmer = (
-    width: string | number,
-    height: number,
-    borderRadius = 4,
-    marginTop = 0,
-  ) => (
-    <Animated.View
-      style={{
-        width: width as number,
-        height,
-        borderRadius,
-        marginTop,
-        backgroundColor: "#E5E7EB",
-        opacity,
-      }}
-    />
-  );
-
   return (
-    <View className="flex-1 bg-[#DAE0E6]">
-      <View className="mx-3 mt-3 overflow-hidden rounded-xl bg-white p-4">
-        {/* Author row skeleton */}
-        <View className="flex-row items-center">
-          {shimmer(32, 32, 16)}
-          <View className="ml-2.5">
-            {shimmer(100, 12, 4)}
-            {shimmer(60, 10, 4, 6)}
+    <SkeletonProvider>
+      <View
+        className="flex-1 bg-feed"
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
+        <View className="mx-3 mt-3 overflow-hidden rounded-xl bg-white p-4">
+          {/* Author row skeleton */}
+          <View className="flex-row items-center">
+            <ShimmerBlock className="h-8 w-8 rounded-full" />
+            <View className="ml-2.5">
+              <ShimmerBlock className="h-3 w-24 rounded" />
+              <ShimmerBlock className="mt-1.5 h-2.5 w-16 rounded" />
+            </View>
           </View>
+          {/* Title skeleton */}
+          <ShimmerBlock className="mt-5 h-5 w-11/12 rounded" />
+          <ShimmerBlock className="mt-2 h-5 w-8/12 rounded" />
+          {/* Divider */}
+          <View className="my-5 h-px bg-neutral-200" />
+          {/* Content skeleton */}
+          <ShimmerBlock className="h-3.5 w-full rounded" />
+          <ShimmerBlock className="mt-2 h-3.5 w-full rounded" />
+          <ShimmerBlock className="mt-2 h-3.5 w-11/12 rounded" />
+          <ShimmerBlock className="mt-2 h-3.5 w-full rounded" />
+          <ShimmerBlock className="mt-2 h-3.5 w-7/12 rounded" />
         </View>
-        {/* Title skeleton */}
-        <View className="mt-5">
-          {shimmer("95%", 20, 4)}
-          {shimmer("70%", 20, 4, 8)}
-        </View>
-        {/* Divider */}
-        <View className="my-5 h-px bg-neutral-200" />
-        {/* Content skeleton */}
-        {shimmer("100%", 14, 4)}
-        {shimmer("100%", 14, 4, 8)}
-        {shimmer("90%", 14, 4, 8)}
-        {shimmer("100%", 14, 4, 8)}
-        {shimmer("60%", 14, 4, 8)}
       </View>
-    </View>
+    </SkeletonProvider>
   );
 }

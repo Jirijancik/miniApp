@@ -1,18 +1,18 @@
 import { useCallback } from "react";
+
 import { View } from "react-native";
+
 import { useRouter } from "expo-router";
 
+import PostList from "@/components/post/PostList";
+import SearchBar from "@/components/SearchBar";
 import { useFilteredPosts } from "@/hooks/usePosts";
 import useSearch from "@/hooks/useSearch";
-import SearchBar from "@/components/SearchBar";
-import PostList from "@/components/post/PostList";
 
 export default function FeedContent() {
   const router = useRouter();
-  const { searchQuery, debouncedQuery, setSearchQuery, clearSearch } =
-    useSearch();
-  const { data, isLoading, isRefetching, error, refetch } =
-    useFilteredPosts(debouncedQuery);
+  const { searchQuery, debouncedQuery, setSearchQuery, clearSearch } = useSearch();
+  const { data, isLoading, isRefetching, error, refetch } = useFilteredPosts(debouncedQuery);
 
   const handlePostPress = useCallback(
     (postId: string) => {
@@ -22,16 +22,13 @@ export default function FeedContent() {
   );
 
   return (
-    <View className="flex-1 bg-[#DAE0E6]">
-      <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        onClear={clearSearch}
-      />
+    <View className="flex-1 bg-feed">
+      <SearchBar value={searchQuery} onChangeText={setSearchQuery} onClear={clearSearch} />
       <PostList
         posts={data}
         isLoading={isLoading}
         isRefetching={isRefetching}
+        isError={!!error}
         onRefresh={refetch}
         onPostPress={handlePostPress}
         emptyMessage={

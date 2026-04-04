@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+
 import { Text, View } from "react-native";
 
 import Button from "@/components/ui/Button";
@@ -13,10 +14,7 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-export default class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false };
 
   static getDerivedStateFromError(): ErrorBoundaryState {
@@ -44,9 +42,7 @@ export default class ErrorBoundary extends Component<
 
       return (
         <View className="flex-1 items-center justify-center px-6">
-          <Text className="mb-2 text-lg font-semibold text-gray-900">
-            Something went wrong
-          </Text>
+          <Text className="mb-2 text-lg font-semibold text-gray-900">Something went wrong</Text>
           <Text className="mb-6 text-center text-sm text-gray-500">
             An unexpected error occurred. Please try again.
           </Text>

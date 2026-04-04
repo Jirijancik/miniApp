@@ -1,23 +1,24 @@
-import { Text, View } from "react-native";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "expo-router";
-import { useQueryClient } from "@tanstack/react-query";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { useRef } from "react";
 
-import {
-  createPostSchema,
-  type CreatePostFormData,
-} from "@/utils/validation";
+import { Text, type TextInput, View } from "react-native";
+
+import { useRouter } from "expo-router";
+
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { useForm, Controller } from "react-hook-form";
+
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { useUserId } from "@/hooks/useAuth";
 import {
   useCreatePost,
   getPostsControllerGetAllPostsQueryKey,
   getPostsControllerUserPostsQueryKey,
 } from "@/hooks/usePosts";
-import { useUserId } from "@/hooks/useAuth";
 import { showSuccessToast } from "@/utils/toast";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
+import { createPostSchema, type CreatePostFormData } from "@/utils/validation";
 
 interface CreatePostFormProps {
   onSuccess?: () => void;
@@ -28,6 +29,7 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
   const queryClient = useQueryClient();
   const userId = useUserId();
   const mutation = useCreatePost();
+  const contentRef = useRef<TextInput>(null);
 
   const {
     control,
@@ -67,12 +69,8 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
       keyboardShouldPersistTaps="handled"
     >
       <View className="mb-6">
-        <Text className="text-2xl font-bold text-gray-900">
-          Create a New Post
-        </Text>
-        <Text className="mt-1 text-sm text-gray-500">
-          Share your thoughts with the community
-        </Text>
+        <Text className="text-2xl font-bold text-gray-900">Create a New Post</Text>
+        <Text className="mt-1 text-sm text-gray-500">Share your thoughts with the community</Text>
       </View>
 
       <Controller
@@ -82,6 +80,8 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
           <Input
             label="Title"
             placeholder="Enter a title..."
+            returnKeyType="next"
+            onSubmitEditing={() => contentRef.current?.focus()}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -95,6 +95,7 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
         name="content"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
+            ref={contentRef}
             label="Content"
             placeholder="Write your post content..."
             multiline
@@ -110,11 +111,7 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
       />
 
       <View className="mt-2">
-        <Button
-          title="Publish"
-          onPress={handleSubmit(onSubmit)}
-          isLoading={mutation.isPending}
-        />
+        <Button title="Publish" onPress={handleSubmit(onSubmit)} isLoading={mutation.isPending} />
       </View>
     </BottomSheetScrollView>
   );

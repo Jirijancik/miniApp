@@ -26,26 +26,14 @@ const mockPosts: PostResponse[] = [
 
 describe("PostList", () => {
   it("renders a list of posts", () => {
-    render(
-      <PostList
-        posts={mockPosts}
-        isLoading={false}
-        onPostPress={jest.fn()}
-      />,
-    );
+    render(<PostList posts={mockPosts} isLoading={false} onPostPress={jest.fn()} />);
 
     expect(screen.getByText("First Post")).toBeOnTheScreen();
     expect(screen.getByText("Second Post")).toBeOnTheScreen();
   });
 
   it("shows skeleton cards when loading with no posts", () => {
-    const { toJSON } = render(
-      <PostList
-        posts={[]}
-        isLoading={true}
-        onPostPress={jest.fn()}
-      />,
-    );
+    const { toJSON } = render(<PostList posts={[]} isLoading={true} onPostPress={jest.fn()} />);
 
     // SkeletonCard renders View elements — skeleton cards should be in tree
     // and there should be no "No posts found" text
@@ -55,12 +43,7 @@ describe("PostList", () => {
 
   it("shows empty message when no posts and not loading", () => {
     render(
-      <PostList
-        posts={[]}
-        isLoading={false}
-        onPostPress={jest.fn()}
-        emptyMessage="No posts yet"
-      />,
+      <PostList posts={[]} isLoading={false} onPostPress={jest.fn()} emptyMessage="No posts yet" />,
     );
 
     expect(screen.getAllByText(/No posts yet/)).toBeTruthy();
@@ -68,13 +51,7 @@ describe("PostList", () => {
 
   it("calls onPostPress when a post is tapped", () => {
     const onPostPress = jest.fn();
-    render(
-      <PostList
-        posts={mockPosts}
-        isLoading={false}
-        onPostPress={onPostPress}
-      />,
-    );
+    render(<PostList posts={mockPosts} isLoading={false} onPostPress={onPostPress} />);
 
     fireEvent.press(screen.getByText("First Post"));
     expect(onPostPress).toHaveBeenCalledWith(mockPosts[0].id);

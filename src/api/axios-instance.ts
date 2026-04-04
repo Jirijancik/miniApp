@@ -1,16 +1,19 @@
 import axios from "axios";
-import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 import { API_BASE_URL } from "@/constants/config";
+
+import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 // Main axios instance: used by all API
 export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 15_000,
 });
 
 // Separate instance for token refresh — no interceptors = no infinite loop
 export const refreshAxiosInstance = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 10_000,
 });
 
 // --- Token refresh logic ---
@@ -36,9 +39,7 @@ const processQueue = (error: unknown, token: string | null) => {
 };
 
 // Using require to avoid circular imports (auth-store imports Orval → imports custom-instance → imports this)
-const getAuthStore = () =>
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require("../stores/auth-store").useAuthStore;
+const getAuthStore = () => require("../stores/auth-store").useAuthStore;
 
 const safeLogout = () => {
   try {
@@ -60,10 +61,7 @@ axiosInstance.interceptors.request.use(
       }
     } catch (error) {
       if (__DEV__) {
-        console.warn(
-          "Auth store not available for request interceptor:",
-          error,
-        );
+        console.warn("Auth store not available for request interceptor:", error);
       }
     }
 
@@ -80,9 +78,7 @@ interface RetryableAxiosRequestConfig extends InternalAxiosRequestConfig {
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as
-      | RetryableAxiosRequestConfig
-      | undefined;
+    const originalRequest = error.config as RetryableAxiosRequestConfig | undefined;
 
     if (!originalRequest || error.response?.status !== 401) {
       return Promise.reject(error);
@@ -113,16 +109,25 @@ axiosInstance.interceptors.response.use(
 
     try {
       const authStore = getAuthStore();
-      const { refreshToken } = authStore.getState();
+      const { refreshToken, accessToken } = authStore.getState();
 
       if (!refreshToken) {
         throw new Error("No refresh token available");
       }
 
-      // Use the refresh instance to avoid infinite loop
+      // Use the refresh instance to avoid infinite loop.
+      // The backend requires a valid Bearer token even on the refresh endpoint.
       const { data } = await refreshAxiosInstance.post<{
         access_token: string;
-      }>("/auth/refresh-token", { token: refreshToken });
+      }>(
+        "/auth/refresh-token",
+        { token: refreshToken },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
 
       // Refresh endpoint returns snake_case — normalize
       const newAccessToken = data.access_token;

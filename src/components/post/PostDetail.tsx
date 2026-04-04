@@ -4,6 +4,7 @@ import type { PostResponse } from "@/api/generated/model";
 import {
   getAvatarBg,
   getInitials,
+  getDisplayAuthorId,
   formatRelativeDate,
 } from "@/utils/post-helpers";
 
@@ -13,10 +14,7 @@ interface PostDetailProps {
 
 export default function PostDetail({ post }: PostDetailProps) {
   return (
-    <ScrollView
-      className="flex-1 bg-[#DAE0E6]"
-      contentContainerClassName="px-3 pt-3 pb-8"
-    >
+    <ScrollView className="flex-1 bg-feed" contentContainerClassName="px-3 pt-3 pb-8">
       <View className="overflow-hidden rounded-xl bg-white p-4">
         {/* Author header */}
         <View className="flex-row items-center">
@@ -24,13 +22,11 @@ export default function PostDetail({ post }: PostDetailProps) {
             className="h-8 w-8 items-center justify-center rounded-full"
             style={{ backgroundColor: getAvatarBg(post.authorId) }}
           >
-            <Text className="text-xs font-bold text-white">
-              {getInitials(post.authorId)}
-            </Text>
+            <Text className="text-xs font-bold text-white">{getInitials(post.authorId)}</Text>
           </View>
           <View className="ml-2.5">
             <Text className="text-sm font-semibold text-neutral-800">
-              {post.authorId.slice(0, 8)}
+              {getDisplayAuthorId(post.authorId)}
             </Text>
             <Text className="mt-0.5 text-xs text-neutral-400">
               {formatRelativeDate(post.createdAt)}
@@ -39,17 +35,13 @@ export default function PostDetail({ post }: PostDetailProps) {
         </View>
 
         {/* Title */}
-        <Text className="mt-4 text-xl font-bold leading-7 text-neutral-950">
-          {post.title}
-        </Text>
+        <Text className="mt-4 text-xl font-bold leading-7 text-neutral-950">{post.title}</Text>
 
         {/* Divider */}
         <View className="my-4 h-px bg-neutral-200" />
 
         {/* Content */}
-        <Text className="text-[15px] leading-6 text-neutral-700">
-          {post.content}
-        </Text>
+        <Text className="text-[15px] leading-6 text-neutral-700">{post.content}</Text>
 
         {/* Updated badge */}
         {post.updatedAt !== post.createdAt && (

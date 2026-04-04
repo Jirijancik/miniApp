@@ -18,9 +18,7 @@ describe("PostCard", () => {
     render(<PostCard post={mockPost} onPress={jest.fn()} />);
 
     expect(screen.getByText("Test Post Title")).toBeOnTheScreen();
-    expect(
-      screen.getByText("This is test content for the post card component"),
-    ).toBeOnTheScreen();
+    expect(screen.getByText("This is test content for the post card component")).toBeOnTheScreen();
   });
 
   it("renders author ID preview", () => {

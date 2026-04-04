@@ -8,13 +8,15 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
+    "lint:fix": "expo lint --fix",
+    "format": "prettier --write \"app/**/*.{ts,tsx}\" \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"app/**/*.{ts,tsx}\" \"src/**/*.{ts,tsx}\" \"__tests__/**/*.{ts,tsx}\"",
     "generate-api": "orval --config ./orval.config.ts",
     "test": "jest"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
-    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/bottom-tabs": "^7.15.5",
     "@react-navigation/elements": "^2.9.10",
     "@react-navigation/native": "^7.1.33",
@@ -29,6 +31,7 @@
     "expo-image": "~55.0.7",
     "expo-linking": "~55.0.10",
     "expo-router": "~55.0.9",
+    "expo-secure-store": "~55.0.11",
     "expo-splash-screen": "~55.0.14",
     "expo-status-bar": "~55.0.4",
     "expo-symbols": "~55.0.6",
@@ -55,10 +58,19 @@
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^30.0.0",
     "@types/react": "~19.2.2",
+    "eslint": "^9.39.4",
+    "eslint-config-expo": "^55.0.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-unused-imports": "^4.4.1",
     "jest-expo": "^55.0.12",
     "msw": "^2.12.14",
     "orval": "^7.8.0",
+    "prettier": "^3.8.1",
     "typescript": "~5.9.2"
   },
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
 }

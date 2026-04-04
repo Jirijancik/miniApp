@@ -1,15 +1,17 @@
 import "../global.css";
 
 import { useEffect } from "react";
+
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Toast from "react-native-toast-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
 import { useIsAuthenticated, useIsHydrated } from "@/hooks/useAuth";
-import { showErrorToast } from "@/utils/toast";
 import { getErrorMessage } from "@/utils/errors";
+import { showErrorToast } from "@/utils/toast";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,7 +56,7 @@ export default function RootLayout() {
             <Stack.Screen name="(app)" />
           </Stack.Protected>
         </Stack>
-        <Toast />
+        <Toast position="bottom" />
       </QueryClientProvider>
     </GestureHandlerRootView>
   );

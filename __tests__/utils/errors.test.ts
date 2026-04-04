@@ -41,9 +41,7 @@ describe("getErrorMessage", () => {
       isAxiosError: true,
       response: { status: 500, data: {} },
     };
-    expect(getErrorMessage(error)).toBe(
-      "Something went wrong, please try again",
-    );
+    expect(getErrorMessage(error)).toBe("Something went wrong, please try again");
   });
 
   it("returns generic message for 502 errors", () => {
@@ -51,9 +49,7 @@ describe("getErrorMessage", () => {
       isAxiosError: true,
       response: { status: 502, data: {} },
     };
-    expect(getErrorMessage(error)).toBe(
-      "Something went wrong, please try again",
-    );
+    expect(getErrorMessage(error)).toBe("Something went wrong, please try again");
   });
 
   it("returns network error message when no response", () => {

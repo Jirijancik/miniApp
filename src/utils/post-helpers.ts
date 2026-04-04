@@ -21,6 +21,10 @@ export function getInitials(authorId: string): string {
   return authorId.slice(0, 2).toUpperCase();
 }
 
+export function getDisplayAuthorId(authorId: string): string {
+  return authorId.slice(0, 8);
+}
+
 interface FormatDateOptions {
   compact?: boolean;
 }
@@ -31,6 +35,7 @@ export function formatRelativeDate(
 ): string {
   const now = Date.now();
   const date = new Date(dateStr).getTime();
+  if (isNaN(date)) return "Unknown date";
   const diffMs = now - date;
   const diffMin = Math.floor(diffMs / 60_000);
   const diffHrs = Math.floor(diffMs / 3_600_000);

@@ -1,19 +1,18 @@
 import { Text, View } from "react-native";
+
 import { Stack } from "expo-router";
 
-import { usePost } from "@/hooks/usePosts";
-import Button from "@/components/ui/Button";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PostDetail from "@/components/post/PostDetail";
 import PostDetailSkeleton from "@/components/post/PostDetailSkeleton";
+import Button from "@/components/ui/Button";
+import { usePost } from "@/hooks/usePosts";
 
 function ErrorFallback({ onReset }: { onReset: () => void }) {
   return (
-    <View className="flex-1 items-center justify-center bg-[#DAE0E6] px-6">
+    <View className="flex-1 items-center justify-center bg-feed px-6">
       <View className="w-full items-center rounded-xl bg-white px-6 py-10">
-        <Text className="mb-2 text-lg font-semibold text-neutral-900">
-          Something went wrong
-        </Text>
+        <Text className="mb-2 text-lg font-semibold text-neutral-900">Something went wrong</Text>
         <Text className="mb-6 text-center text-sm text-neutral-500">
           The post could not be loaded. Please try again.
         </Text>
